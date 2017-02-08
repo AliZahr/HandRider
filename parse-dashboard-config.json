@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "serverURL": "https://localhost:1414/parse",
+      "appId": "myAppId",
+      "masterKey": "myMasterKey",
+      "appName": "HandRider"
+    }
+  ]
+}
