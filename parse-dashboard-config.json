@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "serverURL": "https://localhost:1414/parse",
-      "appId": "myAppId",
-      "masterKey": "myMasterKey",
+      "serverURL": "https://handrider.herokuapp.com/parse",
+      "appId": "123456",
+      "masterKey": "1234567890",
       "appName": "HandRider"
     }
   ]
