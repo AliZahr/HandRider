@@ -24,7 +24,7 @@ var api = new ParseServer({
       },
       ios: {
         pfx: 'certs/Certificates.p12',
-        bundleId: process.env.APN_BUNDLE_ID || '',
+        bundleId: 'com.zahr.handrider',
         production: false
       }
     }
