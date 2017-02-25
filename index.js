@@ -25,7 +25,7 @@ var api = new ParseServer({
       ios: {
         pfx: 'certs/Certificates.p12',
         bundleId: process.env.APNS_Bundle_Id,
-        production: process.env.APNS_isProduction
+        production: false
       }
     }
 });
