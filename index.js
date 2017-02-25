@@ -19,8 +19,8 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   push: {
       android: {
-        senderId: '',
-        apiKey: ''
+        senderId: '123',
+        apiKey: '123'
       },
       ios: {
         pfx: 'certs/Certificates.p12',
