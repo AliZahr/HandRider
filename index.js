@@ -16,20 +16,7 @@ var api = new ParseServer({
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'myAppId',
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
-  push: {
-		android: {
-			senderId: '', // The Sender ID of GCM
-			apiKey: '' // The Server API Key of GCM
-		},
-		ios: {
-			pfx: 'certs/Certificates.p12', // the path and filename to the .p12 file you exported earlier. 
-			cert: '', // If not using the .p12 format, the path to the certificate PEM to load from disk
-			bundleId: 'com.zahr.handrider', // The bundle identifier associated with your app
-			key: '', // If not using the .p12 format, the path to the private key PEM to load from disk
-			production: false // Specifies which environment to connect to: Production (if true) or Sandbox
-		}
-	}
+  serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse'  // Don't forget to change to https if needed
 });
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
 // If you wish you require them, you can set them as options in the initialization above:
