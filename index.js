@@ -19,12 +19,12 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   push: {
       android: {
-        senderId: 'your send id',
-        apiKey: 'your app key'
+        senderId: '',
+        apiKey: ''
       },
       ios: {
         pfx: 'certs/Certificates.p12',
-        bundleId: 'com.zahr.handrider',
+        bundleId: process.env.APN_BUNDLE_ID,
         production: false
       }
     }
