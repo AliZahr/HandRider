@@ -186,13 +186,13 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated2", function(request, respons
 				title: "HandRider!"
 			}
 		}, {
-			success: function(){
-				console.log("pushed successfully :)");
-			},
-			error: function(){
-				console.log("push Failed! :(");
-			}
-		});
+      useMasterKey: true
+    })
+    .then(function() {
+      response.success("Push Sent!");
+    }, function(error) {
+      response.error("Error while trying to send push " + error.message);
+    });
 		var r = newLat + "," + newLng;
 		console.log(r);
 		response.success(r);
