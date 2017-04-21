@@ -158,11 +158,10 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated2", function(request, respons
 	var newLat = request.params.newLat;
 	var newLng = request.params.newLng;
 	var newBearing = request.params.newBearing;
-			    console.log('Parse.serverURL: ' + Parse.serverURL);
 
 	var query = new Parse.Query("Ride");
 	query.equalTo("objectId",rideObjectId);
-	query.find({
+	query.find({useMasterKey: true,
     success: function(results) {
 		var ride = results[0];
 		ride.set("current_lat",newLat);
