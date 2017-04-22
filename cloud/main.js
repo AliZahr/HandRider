@@ -209,8 +209,12 @@ Parse.Cloud.define("testHTTPrequest", function(request, response) {
 		url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin=33.87177737417301,35.49630884081125&destination=33.67607214239718,35.46580508351326'
 	},{useMasterKey: true}).then(function(httpResponse) {
 		// success
-		console.log(httpResponse.text);
-		response.success(httpResponse.text);
+		//console.log(httpResponse.text);
+		//response.success(httpResponse.text);
+		var response = JSON.parse(httpResponse.text);
+		var encodedPolyLine = response.routes[0].overview_polyline.points;
+		console.log(encodedPolyLine);
+		response.success(encodedPolyLine);
 	},function(httpResponse) {
 		// error
 		console.error('Request failed with response code ' + httpResponse.status);
