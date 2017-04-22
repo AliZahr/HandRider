@@ -249,8 +249,8 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 				// success
 				var r = JSON.parse(httpResponse.text);
 				var encodedPolyLine = r.routes[0].overview_polyline.points;
-				console.log("destUni location : " + destUni.location.latitude + "," + destUni.location.longitude + " .. encodedPolyLine : " + encodedPolyLine);
-				response.success("destUni location : " + destUni.location.latitude + "," + destUni.location.longitude + " .. encodedPolyLine : " + encodedPolyLine);
+				console.log("destUni location : " + destUni.get("location").latitude + "," + destUni.get("location").longitude + " .. encodedPolyLine : " + encodedPolyLine);
+				response.success("destUni location : " + destUni.get("location").latitude + "," + destUni.get("location").longitude + " .. encodedPolyLine : " + encodedPolyLine);
 			},function(httpResponse) {
 				// error
 				console.error('Request failed with response code ' + httpResponse.status);
