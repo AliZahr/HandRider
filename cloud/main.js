@@ -211,8 +211,8 @@ Parse.Cloud.define("testHTTPrequest", function(request, response) {
 		// success
 		//console.log(httpResponse.text);
 		//response.success(httpResponse.text);
-		var response = JSON.parse(httpResponse.text);
-		var encodedPolyLine = response.routes[0].overview_polyline.points;
+		var r = JSON.parse(httpResponse.text);
+		var encodedPolyLine = r.routes[0].overview_polyline.points;
 		console.log(encodedPolyLine);
 		response.success(encodedPolyLine);
 	},function(httpResponse) {
