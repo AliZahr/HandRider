@@ -206,8 +206,8 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated2", function(request, respons
 
 Parse.Cloud.define("testHTTPrequest", function(request, response) {
 	Parse.Cloud.httpRequest({
-		url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin=33.87177737417301,35.49630884081125&destination=33.67607214239718,35.46580508351326',
-		useMasterKey: true}).then(function(httpResponse) {
+		url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin=33.87177737417301,35.49630884081125&destination=33.67607214239718,35.46580508351326'
+	},{useMasterKey: true}).then(function(httpResponse) {
 		// success
 		console.log(httpResponse.text);
 		response.success(httpResponse.text);
