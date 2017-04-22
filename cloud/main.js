@@ -221,3 +221,71 @@ Parse.Cloud.define("testHTTPrequest", function(request, response) {
 		response.error('Request failed with response code ' + httpResponse.status);
 	});
 });
+
+
+Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, response) {	
+	var rideObjectId = request.params.ride_obj_id;
+	var newLat = request.params.newLat;
+	var newLng = request.params.newLng;
+	var newBearing = request.params.newBearing;
+
+	var query = new Parse.Query("Ride");
+	query.equalTo("objectId",rideObjectId);
+	query.include("destination_university_obj");
+	query.find({
+		useMasterKey: true,
+		success: function(results) {
+			var ride = results[0];
+			ride.set("current_lat",newLat);
+			ride.set("current_lng",newLng);
+			var destUni = ride.get("destination_university_obj");
+			console.log("destUni location : " + destUni.latitude + "," + destUni.longitude);
+			
+			Parse.Cloud.httpRequest({
+				url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin='+newLat+','+newLng+'&destination='+destUni.latitude+','+destUni.longitude
+			},{useMasterKey: true}).then(function(httpResponse) {
+				// success
+				var r = JSON.parse(httpResponse.text);
+				var encodedPolyLine = r.routes[0].overview_polyline.points;
+				console.log("destUni location : " + destUni.latitude + "," + destUni.longitude + " .. encodedPolyLine : " + encodedPolyLine);
+				response.success("destUni location : " + destUni.latitude + "," + destUni.longitude + " .. encodedPolyLine : " + encodedPolyLine);
+			},function(httpResponse) {
+				// error
+				console.error('Request failed with response code ' + httpResponse.status);
+				response.error('Request failed with response code ' + httpResponse.status);
+			});
+			
+			/*ride.save(null, {useMasterKey: true,
+				success: function(ride){
+					console.log("Driver location updated successfully :)");
+				},
+				error: function(ride, error){
+					console.log("Failed updating driver location! :( " + error.message);
+				}
+			});
+			//send push notification to all active users to update bus location on their map
+			Parse.Push.send({
+				channels: ["active"],
+				data:{
+					ride_id: rideObjectId,
+					lat: newLat,
+					lng: newLng,
+					bearing: newBearing,
+					alert: "HandRider push notification test...",
+					title: "HandRider!"
+				}
+			}, {useMasterKey: true}).then(function() {
+				response.success("Push Sent!");
+			}, function(error) {
+				response.error("Error while trying to send push " + error.message);
+			});
+			var r = newLat + "," + newLng;
+			console.log(r);
+			response.success(r);
+			response.success(r);*/
+			},
+		error: function(error) {
+			response.error("Error: " + error.code + " " + error.message);
+		}
+	});
+});
