@@ -229,12 +229,14 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 	var newLng = request.params.newLng;
 	var newBearing = request.params.newBearing;
 
+	console.log("start query");
 	var query = new Parse.Query("Ride");
 	query.equalTo("objectId",rideObjectId);
 	query.include("destination_university_obj");
 	query.find({
 		useMasterKey: true,
 		success: function(results) {
+			console.log("done query");
 			var ride = results[0];
 			ride.set("current_lat",newLat);
 			ride.set("current_lng",newLng);
