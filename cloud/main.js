@@ -241,7 +241,7 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 			ride.set("current_lat",newLat);
 			ride.set("current_lng",newLng);
 			var destUni = ride.get("destination_university_obj");
-			console.log("destUni location : " + destUni.latitude + "," + destUni.longitude);
+			console.log("destUni location : " + destUni.location.latitude + "," + destUni.location.longitude);
 			
 			Parse.Cloud.httpRequest({
 				url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin='+newLat+','+newLng+'&destination='+destUni.latitude+','+destUni.longitude
@@ -249,8 +249,8 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 				// success
 				var r = JSON.parse(httpResponse.text);
 				var encodedPolyLine = r.routes[0].overview_polyline.points;
-				console.log("destUni location : " + destUni.latitude + "," + destUni.longitude + " .. encodedPolyLine : " + encodedPolyLine);
-				response.success("destUni location : " + destUni.latitude + "," + destUni.longitude + " .. encodedPolyLine : " + encodedPolyLine);
+				console.log("destUni location : " + destUni.location.latitude + "," + destUni.location.longitude + " .. encodedPolyLine : " + encodedPolyLine);
+				response.success("destUni location : " + destUni.location.latitude + "," + destUni.location.longitude + " .. encodedPolyLine : " + encodedPolyLine);
 			},function(httpResponse) {
 				// error
 				console.error('Request failed with response code ' + httpResponse.status);
