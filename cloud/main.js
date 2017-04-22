@@ -241,7 +241,7 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 			ride.set("current_lat",newLat);
 			ride.set("current_lng",newLng);
 			var destUni = ride.get("destination_university_obj");
-			console.log("destUni location : " + destUni.location.latitude + "," + destUni.location.longitude);
+			console.log("destUni location : " + destUni.get("location").latitude + "," + destUni.get("location").longitude);
 			
 			Parse.Cloud.httpRequest({
 				url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin='+newLat+','+newLng+'&destination='+destUni.latitude+','+destUni.longitude
