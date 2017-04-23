@@ -292,18 +292,26 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 
 
 Parse.Cloud.afterSave("Request", function(request) {
-	var ride = request.object.get("ride_obj");
+	
+	request.object.get("ride_obj").fetch({useMasterKey: true}).then(function(ride){
+		console.log("Ride ID = " + ride.id);
+		ride.get("driver_obj").fetch({useMasterKey: true}).then(function(driver){
+			console.log("Driver ID = " + driver.id);
+		});
+	});
+	
+	//var ride = request.object.get("ride_obj");
 	//console.log("ride json: " + ride.toJSON());
-	console.log("request lat: " + request.object.get("startFrom_latitude") + ", request lng: " + request.object.get("startFrom_longitude"));
+	//console.log("request lat: " + request.object.get("startFrom_latitude") + ", request lng: " + request.object.get("startFrom_longitude"));
 	//var driver = ride.get("driver_obj");
-	ride.get("driver_obj").fetch({
+	/*ride.get("driver_obj").fetch({
 		success: function(driver){
 			console.log("driver phone#: " + driver.get("phone_number"));
 		},
 		error: function(error){
 			console.error('Error: ' + error.code + ' - ' + error.message);
 		}
-	});
+	});*/
 	//console.log("driver json: " + driver.toJSON());
 	//console.log("driver phone#: " + driver.get("phone_number"));
 	//var user = driver.get("user_obj");
