@@ -293,11 +293,13 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 
 Parse.Cloud.afterSave("Request", function(request) {
 	var ride = request.object.get("ride_obj");
-	console.log("request lat: " + request.object.get("startFrom_latitude") + ", request lng: " + request.object.get("startFrom_longitude"));
+	console.log("ride json: " + ride.toJSON());
+	//console.log("request lat: " + request.object.get("startFrom_latitude") + ", request lng: " + request.object.get("startFrom_longitude"));
 	var driver = ride.get("driver_obj");
-	console.log("driver phone#: " + driver.get("phone_number"));
-	var user = driver.get("user_obj");
-	console.log("user name: " + user.get("fullname"));
+	console.log("driver json: " + driver.toJSON());
+	//console.log("driver phone#: " + driver.get("phone_number"));
+	//var user = driver.get("user_obj");
+	//console.log("user name: " + user.get("fullname"));
 	
 	// Find device associated with this user
 	/*var pushQuery = new Parse.Query(Parse.Installation);
