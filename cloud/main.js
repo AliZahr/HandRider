@@ -102,7 +102,7 @@ Parse.Cloud.define("getSuitableDrivers", function(request, response) {
     }
   });*/
   //console.error("no error.. just testing something :p");
-});
+//});
 
 Parse.Cloud.define("busDriverCurrentLocationUpdated", function(request, response) {
 	var RideTable = Parse.Object.extend("Ride"); //You can put this at the top of your cloud code file so you don't have to do it in every function
