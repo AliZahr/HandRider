@@ -292,46 +292,33 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 
 
 Parse.Cloud.afterSave("Request", function(request) {
-	
+	// Find ride associated with this request
 	request.object.get("ride_obj").fetch({useMasterKey: true}).then(function(ride){
 		console.log("Ride ID = " + ride.id);
+		// Find driver associated with this ride
 		ride.get("driver_obj").fetch({useMasterKey: true}).then(function(driver){
 			console.log("Driver ID = " + driver.id);
+			// Find user associated with this driver
+			driver.get("user_obj").fetch({useMasterKey: true}).then(function(user){
+				console.log("user ID = " + user.id);
+				// Find device associated with this user
+				var pushQuery = new Parse.Query(Parse.Installation);
+				pushQuery.equalTo('user', user);
+				// Send push notification to query
+				Parse.Push.send({
+					where: pushQuery,
+					data:{
+						lat: request.object.get("startFrom_latitude"),
+						lng: request.object.get("startFrom_longitude"),
+						alert: "New Request...",
+						title: "HandRider!"
+					}
+				}, {useMasterKey: true}).then(function() {
+					console.log("notification pushed :)");
+				}, function(error) {
+					console.log("Error while trying to send push! " + error.message);
+				});
+			});
 		});
 	});
-	
-	//var ride = request.object.get("ride_obj");
-	//console.log("ride json: " + ride.toJSON());
-	//console.log("request lat: " + request.object.get("startFrom_latitude") + ", request lng: " + request.object.get("startFrom_longitude"));
-	//var driver = ride.get("driver_obj");
-	/*ride.get("driver_obj").fetch({
-		success: function(driver){
-			console.log("driver phone#: " + driver.get("phone_number"));
-		},
-		error: function(error){
-			console.error('Error: ' + error.code + ' - ' + error.message);
-		}
-	});*/
-	//console.log("driver json: " + driver.toJSON());
-	//console.log("driver phone#: " + driver.get("phone_number"));
-	//var user = driver.get("user_obj");
-	//console.log("user name: " + user.get("fullname"));
-	
-	// Find device associated with this user
-	/*var pushQuery = new Parse.Query(Parse.Installation);
-	pushQuery.equalTo('user', user);
-	// Send push notification to query
-	Parse.Push.send({
-		where: pushQuery,
-		data:{
-			lat: request.object.get("startFrom_latitude"),
-			lng: request.object.get("startFrom_longitude"),
-			alert: "New Request...",
-			title: "HandRider!"
-		}
-	}, {useMasterKey: true}).then(function() {
-		console.log("notification pushed");
-	}, function(error) {
-		console.log("Error while trying to send push " + error.message);
-	});*/
 });
