@@ -71,7 +71,7 @@ Parse.Cloud.define("getSuitableDrivers", function(request, response) {
   });
 });*/
 
-Parse.Cloud.afterSave("Request", function(request) {
+/*Parse.Cloud.afterSave("Request", function(request) {
   
     var Dummy = Parse.Object.extend("Dummy");
     var dummy = new Dummy();
@@ -288,4 +288,33 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 			response.error("Error: " + error.code + " " + error.message);
 		}
 	});
+});
+
+
+Parse.Cloud.afterSave("Request", function(request) {
+	var ride = request.object.get("ride_obj");
+	var driver = ride.get("driver_obj");
+	var user = driver.get("user_obj");
+	
+	console.log("request lat: " + request.object.get("startFrom_latitude") + ", request lng: " + request.object.get("startFrom_longitude"));
+	console.log("driver phone#: " + driver.get("phone_number"));
+	console.log("user name: " + user.get("fullname"));
+	
+	// Find device associated with this user
+	/*var pushQuery = new Parse.Query(Parse.Installation);
+	pushQuery.equalTo('user', user);
+	// Send push notification to query
+	Parse.Push.send({
+		where: pushQuery,
+		data:{
+			lat: request.object.get("startFrom_latitude"),
+			lng: request.object.get("startFrom_longitude"),
+			alert: "New Request...",
+			title: "HandRider!"
+		}
+	}, {useMasterKey: true}).then(function() {
+		console.log("notification pushed");
+	}, function(error) {
+		console.log("Error while trying to send push " + error.message);
+	});*/
 });
