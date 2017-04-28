@@ -292,6 +292,8 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 
 
 Parse.Cloud.afterSave("Request", function(request) {
+	var requestrdUser = request.user;
+	console.log("requestrdUser ID = " + requestrdUser.id + ", requestrdUser name = " + requestrdUser.get("fullname"));
 	// Find ride associated with this request
 	request.object.get("ride_obj").fetch({useMasterKey: true}).then(function(ride){
 		console.log("Ride ID = " + ride.id);
