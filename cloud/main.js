@@ -292,7 +292,7 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 
 
 Parse.Cloud.afterSave("Request", function(request) {
-	console.log("request = ", request);
+	//console.log("request = ", request);
 	//var requestrdUser = request.user;
 	//console.log("requestrdUser ID = " + requestrdUser.id + ", requestrdUser name = " + requestrdUser.get("fullname"));
 	// Find ride associated with this request
@@ -304,24 +304,30 @@ Parse.Cloud.afterSave("Request", function(request) {
 			// Find user associated with this driver
 			driver.get("user_obj").fetch({useMasterKey: true}).then(function(user){
 				console.log("user ID = " + user.id);
-				// Find device associated with this user
-				var pushQuery = new Parse.Query(Parse.Installation);
-				pushQuery.equalTo('user', user);
-				// Send push notification to query
-				Parse.Push.send({
-					where: pushQuery,
-					data:{
-						lat: request.object.get("startFrom_latitude"),
-						lng: request.object.get("startFrom_longitude"),
-						type: "newPassenger",
-						alert: "New Request...",
-						title: "HandRider!"
-					}
-				}, {useMasterKey: true}).then(function() {
-					console.log("notification pushed :)");
-				}, function(error) {
-					console.log("Error while trying to send push! " + error.message);
-				});
+				//get requested user
+				request.object.get("user_obj").fetch({useMasterKey: true}).then(function(requestrdUser){
+					console.log("requestrdUser ID = " + requestrdUser.id + ", requestrdUser name = " + requestrdUser.get("fullname"));
+					// Find device associated with this user
+					var pushQuery = new Parse.Query(Parse.Installation);
+					pushQuery.equalTo('user', user);
+					// Send push notification to query
+					Parse.Push.send({
+						where: pushQuery,
+						data:{
+							lat: request.object.get("startFrom_latitude"),
+							lng: request.object.get("startFrom_longitude"),
+							type: "newPassenger",
+							id: requestrdUser.id,
+							name: requestrdUser.get("fullname"),
+							alert: "New Request...",
+							title: "HandRider!"
+						}
+					}, {useMasterKey: true}).then(function() {
+						console.log("notification pushed :)");
+					}, function(error) {
+						console.log("Error while trying to send push! " + error.message);
+					});
+				}
 			});
 		});
 	});
