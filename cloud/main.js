@@ -327,7 +327,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 					}, function(error) {
 						console.log("Error while trying to send push! " + error.message);
 					});
-				}
+				});
 			});
 		});
 	});
