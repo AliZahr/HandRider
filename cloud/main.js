@@ -310,6 +310,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 					data:{
 						lat: request.object.get("startFrom_latitude"),
 						lng: request.object.get("startFrom_longitude"),
+						type: "newPassenger",
 						alert: "New Request...",
 						title: "HandRider!"
 					}
