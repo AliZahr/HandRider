@@ -253,6 +253,8 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 				ride.set("current_lat",newLat);
 				ride.set("current_lng",newLng);
 				ride.set("current_encoded_path",encodedPolyLine);
+				ride.set("ETA",duration);
+				ride.set("EDA",distance);
 				//update driver location
 				ride.save(null, {useMasterKey: true,
 					success: function(ride){
