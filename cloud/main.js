@@ -247,6 +247,8 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 				// success
 				var r = JSON.parse(httpResponse.text);
 				var encodedPolyLine = r.routes[0].overview_polyline.points;
+				var duration = r.routes[0].legs[0].duration.value; //in seconds
+				var distance = r.routes[0].legs[0].distance.value; //in meters
 				console.log("destUni location : " + destUni.get("location").latitude + "," + destUni.get("location").longitude + " .. encodedPolyLine : " + encodedPolyLine);
 				ride.set("current_lat",newLat);
 				ride.set("current_lng",newLng);
@@ -263,12 +265,17 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 								lat: newLat,
 								lng: newLng,
 								bearing: newBearing,
+								duration: duration,
+								distance: distance,
 								alert: "HandRider push notification test...",
 								title: "HandRider!"
 							}
 						}, {useMasterKey: true}).then(function() {
+							var s = {duration:duration, distance:distance, status:"ok"};
 							console.log("notification pushed");
-							response.success("DONE");
+							console.log(JSON.stringify(s));
+							//response.success("DONE");
+							response.success(JSON.stringify(s));
 						}, function(error) {
 							response.error("Error while trying to send push " + error.message);
 						});
