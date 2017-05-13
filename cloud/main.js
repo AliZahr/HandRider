@@ -306,7 +306,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 	//console.log("requestrdUser ID = " + requestrdUser.id + ", requestrdUser name = " + requestrdUser.get("fullname"));
 	var status = request.object.get("request_status");
 	console.log("status = " + status);
-	if(status != 'PENDING'){
+	if(status != 'PENDING' && status != 'CANCELLED'){
 		console.log("already closed");
 		return;
 	}
