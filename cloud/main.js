@@ -354,7 +354,9 @@ Parse.Cloud.define("busArrived", function(request, response) {
 		channels: ["active"],
 		data:{
 			ride_id: rideObjectId,
-			arrived: true
+			arrived: true,
+			alert: "HandRider push notification test...",
+			title: "HandRider!"
 		}
 	}, {useMasterKey: true}).then(function() {
 		response.success("Arrived push sent :)");
