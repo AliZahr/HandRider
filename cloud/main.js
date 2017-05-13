@@ -306,6 +306,10 @@ Parse.Cloud.afterSave("Request", function(request) {
 	//console.log("requestrdUser ID = " + requestrdUser.id + ", requestrdUser name = " + requestrdUser.get("fullname"));
 	var status = request.object.get("request_status");
 	console.log("status = " + status);
+	if(status != 'PENDING'){
+		console.log("already closed");
+		return;
+	}
 	// Find ride associated with this request
 	request.object.get("ride_obj").fetch({useMasterKey: true}).then(function(ride){
 		console.log("Ride ID = " + ride.id);
