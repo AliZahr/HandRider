@@ -396,8 +396,10 @@ Parse.Cloud.define("updateRequestStatus", function(request, response) {
 						}
 					}, {useMasterKey: true}).then(function() {
 						console.log("updateRequestStatus >> DONE :)");
+						response.success("updateRequestStatus >> DONE :)");
 					}, function(error) {
 						console.log("Error while trying to send push! " + error.message);
+						response.error("Error: " + error.code + " " + error.message);
 					});
 				},
 				error: function(ride, error){
