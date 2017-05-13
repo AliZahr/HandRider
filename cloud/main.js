@@ -360,4 +360,4 @@ Parse.Cloud.define("busArrived", function(request, response) {
 	}, function(error) {
 		response.error("error sending Arrived push :(");
 	});
-}
+});
