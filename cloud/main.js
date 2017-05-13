@@ -304,6 +304,8 @@ Parse.Cloud.afterSave("Request", function(request) {
 	//console.log("request = ", request);
 	//var requestrdUser = request.user;
 	//console.log("requestrdUser ID = " + requestrdUser.id + ", requestrdUser name = " + requestrdUser.get("fullname"));
+	var status = request.object.get("request_status") == 'CANCELLED';
+	console.log("cancelled = " + status);
 	// Find ride associated with this request
 	request.object.get("ride_obj").fetch({useMasterKey: true}).then(function(ride){
 		console.log("Ride ID = " + ride.id);
@@ -326,6 +328,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 							lat: request.object.get("startFrom_latitude"),
 							lng: request.object.get("startFrom_longitude"),
 							type: "newPassenger",
+							status: status,
 							id: requestrdUser.id,
 							name: requestrdUser.get("fullname"),
 							alert: "New Request...",
