@@ -330,6 +330,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 							type: "passenger",
 							status: status,
 							id: requestrdUser.id,
+							request_id: request.id,
 							name: requestrdUser.get("fullname"),
 							alert: "New Request...",
 							title: "HandRider!"
@@ -362,5 +363,47 @@ Parse.Cloud.define("busArrived", function(request, response) {
 		response.success("Arrived push sent :)");
 	}, function(error) {
 		response.error("error sending Arrived push :(");
+	});
+});
+
+Parse.Cloud.define("updateRequestStatus", function(request, response) {
+	var requestID = request.params.requestID;
+	var query = new Parse.Query("Request");
+	query.equalTo("objectId",requestID);
+	query.include("user_obj");
+	query.find({
+		useMasterKey: true,
+		success: function(results) {
+			var req = results[0];
+			req.set("request_status","CLOSED");
+			req.save(null, {useMasterKey: true,
+				success: function(updatedReq){
+					var requestedUser = req.get("user_obj");
+					// Find device associated with the requesting user
+					var pushQuery = new Parse.Query(Parse.Installation);
+					pushQuery.equalTo('user', requestedUser);
+					// Send push notification to query
+					Parse.Push.send({
+						where: pushQuery,
+						data:{
+							picked: true,
+							alert: "New Request...",
+							title: "HandRider!"
+						}
+					}, {useMasterKey: true}).then(function() {
+						console.log("updateRequestStatus >> DONE :)");
+					}, function(error) {
+						console.log("Error while trying to send push! " + error.message);
+					});
+				},
+				error: function(ride, error){
+					console.log("Failed updating request status! :( " + error.message);
+					response.error("Error: " + error.code + " " + error.message);
+				}
+			});
+		},
+		error: function(error) {
+			response.error("Error: " + error.code + " " + error.message);
+		}
 	});
 });
