@@ -383,6 +383,7 @@ Parse.Cloud.define("updateRequestStatus", function(request, response) {
 			req.save(null, {useMasterKey: true,
 				success: function(updatedReq){
 					var requestedUser = req.get("user_obj");
+					console.log("requestedUserID = " + requestedUser.id);
 					// Find device associated with the requesting user
 					var pushQuery = new Parse.Query(Parse.Installation);
 					pushQuery.equalTo('user', requestedUser);
