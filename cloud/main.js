@@ -330,7 +330,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 							type: "passenger",
 							status: status,
 							id: requestrdUser.id,
-							request_id: request.id,
+							request_id: request.object.id,
 							name: requestrdUser.get("fullname"),
 							alert: "New Request...",
 							title: "HandRider!"
