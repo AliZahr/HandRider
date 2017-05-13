@@ -344,3 +344,20 @@ Parse.Cloud.afterSave("Request", function(request) {
 		});
 	});
 });
+
+
+Parse.Cloud.define("busArrived", function(request, response) {
+	//push to active users
+	var rideObjectId = request.params.ride_obj_id;
+	Parse.Push.send({
+		channels: ["active"],
+		data:{
+			ride_id: rideObjectId,
+			arrived: true
+		}
+	}, {useMasterKey: true}).then(function() {
+		response.success("Arrived push sent :)");
+	}, function(error) {
+		response.error("error sending Arrived push :(");
+	});
+}
