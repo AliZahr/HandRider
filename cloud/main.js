@@ -349,6 +349,7 @@ Parse.Cloud.afterSave("Request", function(request) {
 Parse.Cloud.define("busArrived", function(request, response) {
 	//push to active users
 	var rideObjectId = request.params.ride_obj_id;
+	console.log("ride id = " + rideObjectId);
 	Parse.Push.send({
 		channels: ["active"],
 		data:{
