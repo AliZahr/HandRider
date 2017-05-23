@@ -269,7 +269,7 @@ Parse.Cloud.define("busDriverCurrentLocationUpdated3", function(request, respons
 								bearing: newBearing,
 								duration: duration,
 								distance: distance,
-								alert: "HandRider push notification test...",
+								/*alert: "HandRider push notification test...",*/
 								title: "HandRider!"
 							}
 						}, {useMasterKey: true}).then(function() {
