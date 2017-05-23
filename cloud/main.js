@@ -414,3 +414,101 @@ Parse.Cloud.define("updateRequestStatus", function(request, response) {
 		}
 	});
 });
+
+
+Parse.Cloud.define("carpoolArrived", function(request, response) {
+	//push to active users
+	var rideObjectId = request.params.ride_obj_id;
+	console.log("ride id = " + rideObjectId);
+	Parse.Push.send({
+		channels: [rideObjectId],
+		data:{
+			type: "arrived",
+			ride_id: rideObjectId,
+			arrived: true,
+			alert: "HandRider push notification test...",
+			title: "HandRider!"
+		}
+	}, {useMasterKey: true}).then(function() {
+		response.success("Arrived push sent :)");
+	}, function(error) {
+		response.error("error sending Arrived push :(");
+	});
+});
+
+
+Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, response) {
+	var rideObjectId = request.params.ride_obj_id;
+	var newLat = request.params.newLat;
+	var newLng = request.params.newLng;
+	var newBearing = request.params.newBearing;
+
+	console.log("start query");
+	var query = new Parse.Query("Ride");
+	query.equalTo("objectId",rideObjectId);
+	//query.include("destination_university_obj");
+	query.find({
+		useMasterKey: true,
+		success: function(results) {
+			console.log("done query");
+			var ride = results[0];
+			//var destUni = ride.get("destination_university_obj");
+			console.log("destUni location : " + ride.get("dest_lat") + "," + ride.get("dest_lng"));
+			
+			Parse.Cloud.httpRequest({
+				url: 'https://maps.googleapis.com/maps/api/directions/json?sensor=false&origin='+newLat+','+newLng+'&destination='+ride.get("dest_lat")+','+ride.get("dest_lng")
+			},{useMasterKey: true}).then(function(httpResponse) {
+				// success
+				var r = JSON.parse(httpResponse.text);
+				var encodedPolyLine = r.routes[0].overview_polyline.points;
+				var duration = r.routes[0].legs[0].duration.value; //in seconds
+				var distance = r.routes[0].legs[0].distance.value; //in meters
+				console.log("destUni location : " + ride.get("dest_lat") + "," + ride.get("dest_lng") + " .. encodedPolyLine : " + encodedPolyLine);
+				ride.set("current_lat",newLat);
+				ride.set("current_lng",newLng);
+				ride.set("current_encoded_path",encodedPolyLine);
+				ride.set("ETA",duration);
+				ride.set("EDA",distance);
+				//update driver location
+				ride.save(null, {useMasterKey: true,
+					success: function(ride){
+						console.log("Driver location updated successfully :)");
+						//send push notification to all active users to update bus location on their map
+						Parse.Push.send({
+							channels: [rideObjectId],
+							data:{
+								ride_id: rideObjectId,
+								lat: newLat,
+								lng: newLng,
+								bearing: newBearing,
+								duration: duration,
+								distance: distance,
+								/*alert: "HandRider push notification test...",*/
+								title: "HandRider!"
+							}
+						}, {useMasterKey: true}).then(function() {
+							var s = {duration:duration, distance:distance, status:"ok"};
+							console.log("notification pushed");
+							console.log(JSON.stringify(s));
+							//response.success("DONE");
+							response.success(JSON.stringify(s));
+						}, function(error) {
+							response.error("Error while trying to send push " + error.message);
+						});
+					},
+					error: function(ride, error){
+						console.log("Failed updating driver location! :( " + error.message);
+						response.error("Error: " + error.code + " " + error.message);
+					}
+				});
+			},function(httpResponse) {
+				// error
+				console.error('Request failed with response code ' + httpResponse.status);
+				response.error('Request failed with response code ' + httpResponse.status);
+			});
+			},
+		error: function(error) {
+			response.error("Error: " + error.code + " " + error.message);
+		}
+	});
+});
