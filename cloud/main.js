@@ -478,6 +478,7 @@ Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, resp
 							channels: [rideObjectId],
 							data:{
 								ride_id: rideObjectId,
+								type: "carpoolDriverCurrentLocationUpdated",
 								lat: newLat,
 								lng: newLng,
 								bearing: newBearing,
