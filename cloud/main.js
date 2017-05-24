@@ -542,6 +542,7 @@ Parse.Cloud.define("requestCarpoolers", function(request, response) {
 								request_id: request.object.get("id"),
 								name: request.object.get("name"),
 								address: request.object.get("address"),
+								profilePictureLink: request.object.get("profilePictureLink"),
 								alert: "New Request...",
 								title: "HandRider!"
 							}
