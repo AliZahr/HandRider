@@ -515,7 +515,7 @@ Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, resp
 });
 
 Parse.Cloud.define("requestCarpoolers", function(request, response) {
-	var carpoolersRideIDs = JSON.parse(request.get("carpoolersRideIDs"));
+	var carpoolersRideIDs = JSON.parse(request.params.get("carpoolersRideIDs"));
 	for (var i = 0; i < carpoolersRideIDs.length; i++) {
 		var query = new Parse.Query("Ride");
 		query.equalTo("objectId",carpoolersRideIDs[i]);
@@ -536,13 +536,13 @@ Parse.Cloud.define("requestCarpoolers", function(request, response) {
 							where: pushQuery,
 							data:{
 								type: "passenger",
-								lat: request.object.get("lat"),
-								lng: request.object.get("lng"),
-								id: request.object.get("id"),
-								request_id: request.object.get("id"),
-								name: request.object.get("name"),
-								address: request.object.get("address"),
-								profilePictureLink: request.object.get("profilePictureLink"),
+								lat: request.params.get("lat"),
+								lng: request.params.get("lng"),
+								id: request.params.get("id"),
+								request_id: request.params.get("id"),
+								name: request.params.get("name"),
+								address: request.params.get("address"),
+								profilePictureLink: request.params.get("profilePictureLink"),
 								alert: "New Request...",
 								title: "HandRider!"
 							}
