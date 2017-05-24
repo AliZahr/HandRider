@@ -517,6 +517,7 @@ Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, resp
 Parse.Cloud.define("requestCarpoolers", function(request, response) {
 	var carpoolersRideIDs = JSON.parse(request.params.carpoolersRideIDs);
 	console.log("carpoolersRideIDs >> " + carpoolersRideIDs);
+	var counter = carpoolersRideIDs.length;
 	for (var i = 0; i < carpoolersRideIDs.length; i++) {
 		var query = new Parse.Query("Ride");
 		query.equalTo("objectId",carpoolersRideIDs[i]);
@@ -550,7 +551,7 @@ Parse.Cloud.define("requestCarpoolers", function(request, response) {
 							}
 						}, {useMasterKey: true}).then(function() {
 							console.log("notification pushed to " + user.get("fullname") + " :)");
-							if(i == carpoolersRideIDs.length-1){
+							if((--counter) == 0){
 								response.success("Done notifing carpoolers :)");
 							}
 						}, function(error) {
