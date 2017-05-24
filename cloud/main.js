@@ -421,7 +421,7 @@ Parse.Cloud.define("carpoolArrived", function(request, response) {
 	var rideObjectId = request.params.ride_obj_id;
 	console.log("ride id = " + rideObjectId);
 	Parse.Push.send({
-		channels: [rideObjectId],
+		channels: ["carpool_"+rideObjectId],
 		data:{
 			type: "arrived",
 			ride_id: rideObjectId,
@@ -475,7 +475,7 @@ Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, resp
 						console.log("Driver location updated successfully :)");
 						//send push notification to all active users to update bus location on their map
 						Parse.Push.send({
-							channels: [rideObjectId],
+							channels: ["carpool_"+rideObjectId],
 							data:{
 								ride_id: rideObjectId,
 								type: "carpoolDriverCurrentLocationUpdated",
@@ -512,4 +512,53 @@ Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, resp
 			response.error("Error: " + error.code + " " + error.message);
 		}
 	});
+});
+
+Parse.Cloud.define("requestCarpoolers", function(request, response) {
+	var carpoolersRideIDs = JSON.parse(request.get("carpoolersRideIDs"));
+	for (var i = 0; i < carpoolersRideIDs.length; i++) {
+		var query = new Parse.Query("Ride");
+		query.equalTo("objectId",carpoolersRideIDs[i]);
+		query.find({
+			useMasterKey: true,
+			success: function(results) {
+				// Find driver associated with this ride
+				ride.get("driver_obj").fetch({useMasterKey: true}).then(function(driver){
+					console.log("Driver ID = " + driver.id);
+					// Find user associated with this driver
+					driver.get("user_obj").fetch({useMasterKey: true}).then(function(user){
+						console.log("user ID = " + user.id);
+						// Find device associated with this driver user
+						var pushQuery = new Parse.Query(Parse.Installation);
+						pushQuery.equalTo('user', user);
+						// Send push notification to query
+						Parse.Push.send({
+							where: pushQuery,
+							data:{
+								type: "passenger",
+								lat: request.object.get("lat"),
+								lng: request.object.get("lng"),
+								id: request.object.get("id"),
+								request_id: request.object.get("id"),
+								name: request.object.get("name"),
+								address: request.object.get("address"),
+								alert: "New Request...",
+								title: "HandRider!"
+							}
+						}, {useMasterKey: true}).then(function() {
+							console.log("notification pushed to " + user.get("fullname") + " :)");
+							if(i == carpoolersRideIDs.length-1){
+								response.success("Done notifing carpoolers :)");
+							}
+						}, function(error) {
+							console.log("Error while trying to send push! " + error.message);
+						});
+					});
+				});
+			},
+			error: function(error) {
+				response.error("Error: " + error.code + " " + error.message);
+			}
+		});
+	}
 });
