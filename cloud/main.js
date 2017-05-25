@@ -372,6 +372,7 @@ Parse.Cloud.define("busArrived", function(request, response) {
 
 Parse.Cloud.define("updateRequestStatus", function(request, response) {
 	var requestID = request.params.requestID;
+	var rideObjectId = request.params.ride_obj_id;
 	var query = new Parse.Query("Request");
 	query.equalTo("objectId",requestID);
 	query.include("user_obj");
@@ -392,6 +393,7 @@ Parse.Cloud.define("updateRequestStatus", function(request, response) {
 						where: pushQuery,
 						data:{
 							picked: true,
+							ride_id: rideObjectId,
 							alert: "New Request...",
 							title: "HandRider!"
 						}
