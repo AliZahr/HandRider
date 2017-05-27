@@ -455,6 +455,42 @@ Parse.Cloud.define("carpoolArrived", function(request, response) {
 });
 
 
+Parse.Cloud.define("carpoolerIsOutOfPassengerArea", function(request, response) {
+	var rideObjectId = request.params.ride_obj_id;
+	var passengerId = request.params.passengerId;
+	var query = new Parse.Query(Parse.User);
+	query.equalTo("objectId",passengerId);
+	query.find({
+		useMasterKey: true,
+		success: function(results) {
+			var user = results[0];
+			// Find device associated with the requesting user
+			var pushQuery = new Parse.Query(Parse.Installation);
+			pushQuery.equalTo('user', user);
+			// Send push notification to query
+			Parse.Push.send({
+				where: pushQuery,
+				data:{
+					type: "carpoolerIsOutOfPassengerArea",
+					ride_id: rideObjectId,
+					alert: "HandRider push notification test...",
+					title: "HandRider!"
+				}
+			}, {useMasterKey: true}).then(function() {
+				console.log("carpoolerIsOutOfPassengerArea >> DONE :)");
+				response.success("carpoolerIsOutOfPassengerArea >> DONE :)");
+			}, function(error) {
+				console.log("Error while trying to send push! " + error.message);
+				response.error("Error: " + error.code + " " + error.message);
+			});
+		},
+		error: function(error) {
+			response.error("Error: " + error.code + " " + error.message);
+		}
+	});
+});
+
+
 Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, response) {
 	var rideObjectId = request.params.ride_obj_id;
 	var newLat = request.params.newLat;
