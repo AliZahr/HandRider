@@ -441,8 +441,8 @@ Parse.Cloud.define("carpoolArrived", function(request, response) {
 					title: "HandRider!"
 				}
 			}, {useMasterKey: true}).then(function() {
-				console.log("updateRequestStatus >> DONE :)");
-				response.success("updateRequestStatus >> DONE :)");
+				console.log("carpoolArrived >> DONE :)");
+				response.success("carpoolArrived >> DONE :)");
 			}, function(error) {
 				console.log("Error while trying to send push! " + error.message);
 				response.error("Error: " + error.code + " " + error.message);
