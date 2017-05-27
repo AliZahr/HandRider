@@ -493,7 +493,7 @@ Parse.Cloud.define("carpoolDriverCurrentLocationUpdated", function(request, resp
 						console.log("Driver location updated successfully :)");
 						//send push notification to all active users to update bus location on their map
 						Parse.Push.send({
-							channels: ["carpool_"+rideObjectId],
+							channels: [rideObjectId],
 							data:{
 								ride_id: rideObjectId,
 								type: "carpoolDriverCurrentLocationUpdated",
