@@ -570,10 +570,12 @@ Parse.Cloud.define("requestCarpoolers", function(request, response) {
 						}, {useMasterKey: true}).then(function() {
 							console.log("notification pushed to " + user.get("fullname") + " :)");
 							if((--counter) == 0){
-								response.success("Done notifing carpoolers :)");
+								var s = {status:"ok"};
+								response.success(JSON.stringify(s));
 							}
 						}, function(error) {
 							console.log("Error while trying to send push! " + error.message);
+							response.error("Error: " + error.code + " " + error.message);
 						});
 					});
 				});
