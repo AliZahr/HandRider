@@ -419,22 +419,38 @@ Parse.Cloud.define("updateRequestStatus", function(request, response) {
 
 
 Parse.Cloud.define("carpoolArrived", function(request, response) {
-	//push to active users
 	var rideObjectId = request.params.ride_obj_id;
-	console.log("ride id = " + rideObjectId);
-	Parse.Push.send({
-		channels: [rideObjectId],
-		data:{
-			type: "arrived",
-			ride_id: rideObjectId,
-			arrived: true,
-			alert: "HandRider push notification test...",
-			title: "HandRider!"
+	var passengerId = request.params.passengerId;
+	var query = new Parse.Query(Parse.User);
+	query.equalTo("objectId",passengerId);
+	query.find({
+		useMasterKey: true,
+		success: function(results) {
+			var user = results[0];
+			// Find device associated with the requesting user
+			var pushQuery = new Parse.Query(Parse.Installation);
+			pushQuery.equalTo('user', user);
+			// Send push notification to query
+			Parse.Push.send({
+				where: pushQuery,
+				data:{
+					type: "carpoolArrived",
+					ride_id: rideObjectId,
+					arrived: true,
+					alert: "HandRider push notification test...",
+					title: "HandRider!"
+				}
+			}, {useMasterKey: true}).then(function() {
+				console.log("updateRequestStatus >> DONE :)");
+				response.success("updateRequestStatus >> DONE :)");
+			}, function(error) {
+				console.log("Error while trying to send push! " + error.message);
+				response.error("Error: " + error.code + " " + error.message);
+			});
+		},
+		error: function(error) {
+			response.error("Error: " + error.code + " " + error.message);
 		}
-	}, {useMasterKey: true}).then(function() {
-		response.success("Arrived push sent :)");
-	}, function(error) {
-		response.error("error sending Arrived push :(");
 	});
 });
 
@@ -582,7 +598,7 @@ Parse.Cloud.define("passengerRequestResponse", function(request, response) {
 			var user = results[0];
 			// Find device associated with the requesting user
 			var pushQuery = new Parse.Query(Parse.Installation);
-			pushQuery.equalTo('user', requestedUser);
+			pushQuery.equalTo('user', user);
 			// Send push notification to query
 			Parse.Push.send({
 				where: pushQuery,
