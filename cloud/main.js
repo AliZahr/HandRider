@@ -423,7 +423,7 @@ Parse.Cloud.define("carpoolArrived", function(request, response) {
 	var rideObjectId = request.params.ride_obj_id;
 	console.log("ride id = " + rideObjectId);
 	Parse.Push.send({
-		channels: ["carpool_"+rideObjectId],
+		channels: [rideObjectId],
 		data:{
 			type: "arrived",
 			ride_id: rideObjectId,
@@ -567,4 +567,42 @@ Parse.Cloud.define("requestCarpoolers", function(request, response) {
 			}
 		});
 	}
+});
+
+
+Parse.Cloud.define("passengerRequestResponse", function(request, response) {
+	var passengerId = request.params.passengerId;
+	var rideObjectId = request.params.ride_obj_id;
+	var requestResponse = request.params.requestResponse;
+	var query = new Parse.Query(Parse.User);
+	query.equalTo("objectId",passengerId);
+	query.find({
+		useMasterKey: true,
+		success: function(results) {
+			var user = results[0];
+			// Find device associated with the requesting user
+			var pushQuery = new Parse.Query(Parse.Installation);
+			pushQuery.equalTo('user', requestedUser);
+			// Send push notification to query
+			Parse.Push.send({
+				where: pushQuery,
+				data:{
+					type: "passengerRequestResponse",
+					requestResponse: requestResponse,
+					ride_id: rideObjectId,
+					alert: "New Request...",
+					title: "HandRider!"
+				}
+			}, {useMasterKey: true}).then(function() {
+				console.log("passengerRequestResponse >> DONE :)");
+				response.success("passengerRequestResponse >> DONE :)");
+			}, function(error) {
+				console.log("Error while trying to send push! " + error.message);
+				response.error("Error: " + error.code + " " + error.message);
+			});
+		},
+		error: function(error) {
+			response.error("Error: " + error.code + " " + error.message);
+		}
+	});
 });
